@@ -1,7 +1,7 @@
 <svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="270" height="245" viewBox="0 0 270 245" fill="none" xmlns="http://www.w3.org/2000/svg">
 <g id="&#237;&#142;&#156;&#235;&#141;&#152;&#237;&#138;&#184; &#236;&#161;&#176;&#235;&#170;&#133;">
 <g id="&#235;&#185;&#155;" filter="url(#filter0_f_0_9)">
-<ellipse cx="135" cy="155" rx="105" ry="60" fill="#BEDFFF" fill-opacity="0.62"/>
+<ellipse cx="135" cy="158" rx="105" ry="60" fill="url(#lamp-glow)" fill-opacity="0.92"/><ellipse cx="135" cy="163" rx="64" ry="22" fill="#EFF8FF" fill-opacity="0.32"/>
 </g>
 <g id="&#236;&#160;&#132;&#236;&#132;&#160;">
 <rect width="2" height="104" transform="translate(134)" fill="url(#paint0_linear_0_9)"/>
@@ -13,9 +13,9 @@
 <g id="&#236;&#137;&#144;&#236;&#157;&#180;&#235;&#147;&#156; &#236;&#149;&#132;&#235;&#158;&#152;">
 <rect x="60" y="130" width="150" height="21" rx="3" fill="#171915"/>
 </g>
-<ellipse id="&#235;&#176;&#156;&#234;&#180;&#145;&#235;&#169;&#180;" cx="135" cy="150" rx="70" ry="7" fill="#EBF6FF"/>
+<ellipse id="&#235;&#176;&#156;&#234;&#180;&#145;&#235;&#169;&#180;" cx="135" cy="150" rx="70" ry="7" fill="#F5FBFF"/>
 </g>
-<defs>
+<defs><radialGradient id="lamp-glow"><stop offset="0" stop-color="#EFF8FF"/><stop offset="0.38" stop-color="#D5EBFF" stop-opacity="0.9"/><stop offset="1" stop-color="#D5EBFF" stop-opacity="0"/></radialGradient>
 <filter id="filter0_f_0_9" x="0" y="65" width="270" height="180" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
 <feFlood flood-opacity="0" result="BackgroundImageFix"/>
 <feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/>

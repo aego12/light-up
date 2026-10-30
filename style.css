@@ -72,3 +72,5 @@
 @keyframes intro-logo{to{opacity:1;transform:translateY(0);filter:blur(0)}}
 @keyframes intro-text{to{opacity:1;transform:translateY(0)}}
 @keyframes intro-progress{to{transform:scaleX(1)}}
+
+.lamp-emitter{position:absolute;left:-15px;top:0;width:270px;height:245px;opacity:var(--lamp-emitter-intensity,1);transition:opacity 80ms linear;pointer-events:none}
