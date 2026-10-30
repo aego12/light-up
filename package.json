@@ -1,0 +1,17 @@
+{
+  "name": "light-up-warm-living",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Figma 스마트홈 앱을 구현한 HTML CSS JavaScript 인터랙티브 목업",
+  "scripts": {
+    "dev": "node server.js",
+    "check": "node --check app.js",
+    "test": "node tests/prototype.test.mjs",
+    "build": "node scripts/build.mjs",
+    "test:refresh": "node tests/refresh.test.mjs"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

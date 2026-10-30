@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#2b2019">
+  <meta name="description" content="light-up · Warm Living — 빛과 온도로 완성하는 스마트홈 앱 프로토타입">
+  <link rel="icon" href="/public/assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/public/assets/fonts.css">
+  <link rel="stylesheet" href="/style.css">
+  <title>light-up · Warm Living</title>
+</head>
+<body>
+  <div class="ambient" aria-hidden="true"><i></i><i></i><i></i></div>
+  <header class="studio-header">
+    <a class="wordmark" href="#/welcome" aria-label="light-up 시작 화면">light-up<span>®</span></a>
+    <span class="edition">WARM LIVING <i></i> SMART HOME EXPERIENCE</span>
+    <a class="figma-link" href="https://www.figma.com/design/kIbEI0tqwTMeqot5cqOBYG" target="_blank" rel="noopener noreferrer">Figma 디자인 <span aria-hidden="true">↗</span></a>
+  </header>
+  <main class="studio">
+    <section class="introduction" aria-labelledby="studio-title">
+      <p class="eyebrow"><span class="live-dot"></span> INTERACTIVE APP EXPERIENCE</p>
+      <h1 id="studio-title">일상의 온도를,<br>당신의 <em>취향으로.</em></h1>
+      <p class="intro-copy">하나의 빛이 공간을 바꾸고,<br>작은 온도가 하루를 편안하게 만듭니다.<br>당신의 집에 맞는 일상을 만나보세요.</p>
+      <div class="journey-list" aria-label="체험 시작 위치">
+        <button data-route="welcome" class="journey"><span class="journey-number">01</span><span><strong>처음 만나는 light-up</strong><small>온보딩부터 기기 연결까지</small></span><span class="journey-arrow">↗</span></button>
+        <button data-route="home" class="journey"><span class="journey-number">02</span><span><strong>나만의 편안한 공간</strong><small>조명과 온도를 직접 조절해 보세요</small></span><span class="journey-arrow">↗</span></button>
+        <button data-route="routines" class="journey"><span class="journey-number">03</span><span><strong>자연스러운 하루의 루틴</strong><small>내 생활에 맞춰 예약하기</small></span><span class="journey-arrow">↗</span></button>
+      </div>
+      <p class="local-note">브라우저에서 체험하는 스마트홈 데모입니다.<br>실제 계정이나 기기에 연결하지 않습니다.</p>
+    </section>
+    <section class="mockup-stage" aria-label="스마트폰 앱 목업">
+      <div class="stage-halo" aria-hidden="true"></div>
+      <div class="device-wrap"><div class="device">
+        <span class="hardware-button hardware-button-left" aria-hidden="true"></span>
+        <span class="hardware-button hardware-button-right" aria-hidden="true"></span>
+        <div id="app-screen" class="app-screen" aria-label="light-up 앱"></div>
+        <div id="toast" role="status" aria-live="polite" class="toast"></div>
+      </div></div>
+      <p class="touch-hint"><span aria-hidden="true">◌</span> 화면을 눌러 직접 체험해 보세요</p>
+    </section>
+    <aside class="experience-panel" aria-label="현재 화면과 전체 화면">
+      <p class="eyebrow">NOW EXPLORING</p>
+      <div class="screen-counter"><span id="screen-number">01</span><span>/ 31</span></div>
+      <h2 id="screen-label">웰컴</h2>
+      <p id="screen-description">집이 나를 반기는 순간</p>
+      <span class="panel-divider"></span>
+      <label for="screen-picker">다른 화면 둘러보기</label>
+      <select id="screen-picker" aria-label="전체 앱 화면 선택"></select>
+      <button id="reset-demo" class="reset-demo">처음 상태로 되돌리기 <span>↺</span></button>
+      <div class="experience-caption"><span>DESIGNED FOR YOUR EVERYDAY</span><p>A little warmth.<br>A better home.</p></div>
+    </aside>
+  </main>
+  <footer class="studio-footer"><span>LIGHT-UP © 2026</span><span>LIGHT · COMFORT · CONNECTION</span><span class="footer-detail">WARM LIVING — APP PROTOTYPE</span></footer>
+  <script type="module" src="/app.js"></script>
+</body>
+</html>
