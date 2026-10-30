@@ -62,6 +62,28 @@ try {
  await send('Runtime.enable'); await send('Page.enable');
  await send('Emulation.setDeviceMetricsOverride', { width: 1440, height: 1000, deviceScaleFactor: 1, mobile: false });
  await send('Page.navigate', { url: base }); await ready();
+ 
+ await ev('sessionStorage.removeItem("light-up.brand-intro.v1")');
+ await send('Page.reload'); await ready();
+ assert.ok(await ev('!!document.querySelector("#brand-intro")'));
+ assert.equal(await ev('document.querySelector(".screen-view").inert'),true,'Brand intro blocks only the phone view');
+ await delay(1600);
+ await screenshot('light-up-logo-intro.png');
+ await delay(1600);
+ assert.equal(await ev('document.querySelector("#brand-intro")'),null);
+ assert.equal(await ev('document.querySelector(".screen-view").inert'),false);
+ assert.equal(await getScreen(),'welcome');
+ await send('Page.reload');await ready();
+ assert.equal(await ev('document.querySelector("#brand-intro")'),null,'Intro plays once per session');
+ await ev('sessionStorage.removeItem("light-up.brand-intro.v1")');
+ await send('Page.reload');await ready();
+ await click('.intro-skip');
+ assert.equal(await ev('document.querySelector("#brand-intro")'),null);
+ await send('Emulation.setEmulatedMedia',{features:[{name:'prefers-reduced-motion',value:'reduce'}]});
+ await ev('sessionStorage.removeItem("light-up.brand-intro.v1")');
+ await send('Page.reload');await ready();await delay(850);
+ assert.equal(await ev('document.querySelector("#brand-intro")'),null,'Reduced-motion intro completes without animation');
+ await send('Emulation.setEmulatedMedia',{features:[]});
  await send('Page.navigate', { url: base + 'home' }); await ready();
  assert.equal(await getScreen(), 'home', 'Direct URL restored');
  await send('Page.reload'); await ready();

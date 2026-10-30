@@ -36,6 +36,7 @@ let lastSaved = null;
 let timer;
 let toastTimer;
 let busy = false;
+let cancelBrandIntro = null;
 let dialogReturn = 'signup';
 const escapeHTML = (value) => String(value).replace(/[&<>"']/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[char]));
 const e = escapeHTML;
@@ -199,6 +200,7 @@ function template() {
   }
 }
 function render() {
+  cancelBrandIntro?.();
   closeTimePicker(false);
   const route = routes[current];
   screen.innerHTML = '<div class="screen-view" data-screen="' + current + '"><div class="statusbar" aria-hidden="true"><span>9:41</span><span>••• ▰</span></div>' + header() + template() + '<div class="home-indicator" aria-hidden="true"></div></div>';
@@ -401,5 +403,50 @@ function openTimePicker(button) {
   modal.querySelector('[data-time-confirm]').focus({ preventScroll: true });
 }
 
+
+function playBrandIntro(force = false) {
+  const key = 'light-up.brand-intro.v1';
+  if (!force) {
+    try { if (sessionStorage.getItem(key)) return; } catch {}
+  }
+  cancelBrandIntro?.();
+  try { sessionStorage.setItem(key, 'played'); } catch {}
+  const view = screen.querySelector('.screen-view');
+  if (!view) return;
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
+  const overlay = document.createElement('section');
+  overlay.id = 'brand-intro';
+  overlay.className = 'brand-intro' + (reduced.matches ? ' intro-reduced' : '');
+  overlay.setAttribute('aria-label', 'light-up 로고 인트로');
+  overlay.innerHTML = '<div class="intro-light-line" aria-hidden="true"></div><div class="intro-light-halo" aria-hidden="true"></div><div class="intro-lockup"><p class="intro-logo" aria-label="light-up"><span>light-up</span><sup>®</sup></p><p class="intro-tagline">WARM LIVING</p></div><div class="intro-bottom"><p>일상에 따뜻함을 더하다</p><span class="intro-progress" aria-hidden="true"><i></i></span></div><button class="intro-skip" type="button">건너뛰기 <span aria-hidden="true">↗</span></button>';
+  view.inert = true;
+  screen.appendChild(overlay);
+  let active = true;
+  const timers = [];
+  const schedule = (fn, delay) => timers.push(setTimeout(fn, delay));
+  const finish = () => {
+    if (!active) return;
+    active = false;
+    timers.forEach(clearTimeout);
+    overlay.remove();
+    if (view.isConnected) view.inert = false;
+    reduced.removeEventListener('change', finish);
+    cancelBrandIntro = null;
+  };
+  cancelBrandIntro = finish;
+  overlay.querySelector('.intro-skip').addEventListener('click', finish);
+  overlay.addEventListener('keydown', event => { if (event.key === 'Escape') finish(); });
+  reduced.addEventListener('change', finish);
+  schedule(finish, 5000);
+  Promise.race([document.fonts.ready, new Promise(resolve => schedule(resolve, 900))]).then(() => {
+    if (!active) return;
+    overlay.classList.add('intro-playing');
+    schedule(() => { if (active) overlay.classList.add('intro-leaving'); }, reduced.matches ? 600 : 2700);
+    schedule(finish, reduced.matches ? 700 : 3150);
+  });
+}
+
 const initialRoute = routeFromURL();
 go(routes[initialRoute] ? initialRoute : 'welcome', { replace: true });
+
+if (initialRoute === 'welcome') playBrandIntro();

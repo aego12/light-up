@@ -42,3 +42,33 @@
 .time-options button[aria-selected=true]{background:var(--light-color-primary);color:var(--light-color-ink);font-weight:500;box-shadow:0 2px 8px #0001}
 .time-dialog-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:22px}
 .time-dialog-actions .btn{min-height:48px}
+
+/* Brand intro: the lockup retains the final wordmark's typography and proportions. */
+.brand-intro{position:absolute;inset:0;z-index:60;overflow:hidden;border-radius:30px;background:#2b2019;color:#fff6ea;isolation:isolate;transition:opacity 450ms ease,visibility 450ms}
+.brand-intro::before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at 50% 45%,#654a3118,transparent 65%)}
+.intro-light-line{position:absolute;top:0;left:50%;height:210px;width:1px;background:linear-gradient(transparent,#f3b37a99);transform:scaleY(0);transform-origin:top;opacity:0}
+.intro-light-halo{position:absolute;left:50%;top:43%;width:300px;height:270px;border-radius:50%;transform:translate(-50%,-50%) scale(.3);background:radial-gradient(ellipse,#efb57440 0%,#e7ac6620 25%,transparent 67%);filter:blur(18px);opacity:0}
+.intro-lockup{position:absolute;top:40%;left:0;width:100%;text-align:center}
+.intro-logo{display:inline-flex;align-items:flex-start;justify-content:center;gap:5px;margin:0;font:300 46px/1.25 Manrope,sans-serif;letter-spacing:-2.6px;opacity:0;transform:translateY(9px);filter:blur(7px)}
+.intro-logo sup{font:400 9px/1 Manrope,sans-serif;letter-spacing:0;margin-top:11px}
+.intro-tagline{font:400 9px/1.5 Manrope,sans-serif;letter-spacing:4px;color:#d9c5b2;margin:20px 0 0 4px;opacity:0;transform:translateY(6px)}
+.intro-bottom{position:absolute;bottom:124px;left:0;right:0;text-align:center;opacity:0}
+.intro-bottom p{font-size:10px;color:#bfa68e;letter-spacing:.5px;margin:0 0 20px}
+.intro-progress{display:block;width:64px;height:1px;margin:auto;background:#fff6ea20;overflow:hidden}
+.intro-progress i{display:block;height:100%;width:100%;background:#efb77f;transform:scaleX(0);transform-origin:left}
+.intro-skip{position:absolute;right:23px;bottom:35px;padding:10px 0 10px 10px;min-height:40px;background:transparent;color:#b79e88;font-size:10px;letter-spacing:.3px}
+.intro-skip span{margin-left:9px;color:#f3b37a}
+.intro-playing .intro-light-line{animation:intro-line 1.9s ease-out both}
+.intro-playing .intro-light-halo{animation:intro-halo 2.7s ease-out both}
+.intro-playing .intro-logo{animation:intro-logo 1s cubic-bezier(.2,.65,.25,1) 350ms both}
+.intro-playing .intro-tagline{animation:intro-text 800ms ease 950ms both}
+.intro-playing .intro-bottom{animation:intro-text 700ms ease 1250ms both}
+.intro-playing .intro-progress i{animation:intro-progress 1300ms ease 1400ms both}
+.brand-intro.intro-leaving{opacity:0;visibility:hidden;pointer-events:none}
+.intro-reduced .intro-logo,.intro-reduced .intro-tagline,.intro-reduced .intro-bottom{opacity:1;transform:none;filter:none;animation:none!important}
+.intro-reduced .intro-light-line,.intro-reduced .intro-light-halo{display:none}
+@keyframes intro-line{0%{opacity:0;transform:scaleY(0)}35%{opacity:.65;transform:scaleY(1)}100%{opacity:0;transform:scaleY(1.15)}}
+@keyframes intro-halo{0%{opacity:0;transform:translate(-50%,-50%) scale(.3)}50%{opacity:1;transform:translate(-50%,-50%) scale(1)}100%{opacity:.45;transform:translate(-50%,-50%) scale(1.15)}}
+@keyframes intro-logo{to{opacity:1;transform:translateY(0);filter:blur(0)}}
+@keyframes intro-text{to{opacity:1;transform:translateY(0)}}
+@keyframes intro-progress{to{transform:scaleX(1)}}
