@@ -110,6 +110,17 @@ try {
  assert.equal((await savedState()).brightness, 37);
  await click('#app-screen [data-action="kelvin"][data-value="4000"]');
  assert.equal((await savedState()).kelvin, 4000);
+ for (const kelvin of [2700,4000,6500]) {
+  await click('#app-screen [data-action="kelvin"][data-value="'+kelvin+'"]');
+  await ev('document.querySelector(".lamp-art").decode()');
+  assert.equal((await savedState()).kelvin,kelvin);
+  assert.ok(await ev('document.querySelector(".lamp-art").src.endsWith("lamp-'+kelvin+'.svg")'));
+  assert.equal(await ev('document.querySelectorAll("[data-action=kelvin][aria-pressed=true]").length'),1);
+  const clip=await ev('(()=>{const r=document.querySelector("#app-screen").getBoundingClientRect();return {x:r.x,y:r.y,width:r.width,height:r.height,scale:1}})()');
+  const shot=await send('Page.captureScreenshot',{format:'png',clip});
+  await writeFile('artifacts/light-up-color-'+kelvin+'.png',Buffer.from(shot.data,'base64'));
+ }
+ await click('#app-screen [data-action="kelvin"][data-value="4000"]');
  await click('#app-screen [data-action="power"]'); assert.equal(await getScreen(), 'lightOff');
  await click('#app-screen [data-action="power"]'); assert.equal(await getScreen(), 'light');
  await route('climate');

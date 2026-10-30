@@ -133,7 +133,7 @@ function card(title, subtitle, target = '', switchKey = '', on = true, offline =
 function nav(active) {
   return '<nav class="bottom-nav" aria-label="앱 내비게이션">' + [['home', '홈'], ['rooms', '공간'], ['routines', '예약'], ['settings', '설정']].map(([key, label]) => '<button type="button" data-route="' + key + '"' + (active === key ? ' aria-current="page"' : '') + '>' + label + '</button>').join('') + '</nav>';
 }
-function lamp(y, off = false) { return '<div class="lamp-slot' + (off ? ' off' : '') + '" style="--y:' + y + 'px"><img class="lamp-art" src="' + ASSETS + (off ? '30ead.svg' : 'fb2ee.svg') + '" width="' + (off ? 240 : 270) + '" height="' + (off ? 220 : 245) + '" alt="따뜻한 빛을 비추는 블랙 펜던트 조명"></div>'; }
+function lamp(y, off = false) { return '<div class="lamp-slot' + (off ? ' off' : '') + '" style="--y:' + y + 'px"><img class="lamp-art" src="' + ASSETS + (off ? '30ead.svg' : 'lamp-' + ([2700,4000,6500].includes(Number(state.kelvin)) ? state.kelvin : 2700) + '.svg') + '" width="' + (off ? 240 : 270) + '" height="' + (off ? 220 : 245) + '" alt="따뜻한 빛을 비추는 블랙 펜던트 조명"></div>'; }
 function statusArt(symbol, y = 239, error = false) {
   return '<div class="status-art' + (error ? ' error' : '') + '" style="--y:' + y + 'px"><img src="' + ASSETS + '7b4de.svg" width="148" height="148" alt=""><span class="display">' + e(symbol) + '</span></div>';
 }
