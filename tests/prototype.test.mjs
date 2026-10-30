@@ -87,6 +87,19 @@ try {
   if (findings.geometry.length) assetGeometryIssues.push({key,geometry:findings.geometry});
  }
  await click('#reset-demo');
+ await route('addDevice');
+ await click('#app-screen [data-key="lightOn"]');
+ assert.equal(await getScreen(),'addDevice','Discovery switch stays on the search screen');
+ assert.equal((await savedState()).lightOn,false);
+ assert.equal(await ev('document.querySelector("#app-screen [role=switch]").getAttribute("aria-checked")'),'false');
+ assert.equal(await ev('document.querySelector("#app-screen .btn[data-route=wifi]").disabled'),true);
+ await send('Page.reload');await ready();
+ assert.equal(await getScreen(),'addDevice');
+ assert.equal(await ev('document.querySelector("#app-screen [role=switch]").getAttribute("aria-checked")'),'false');
+ await click('#app-screen [data-key="lightOn"]');
+ assert.equal((await savedState()).lightOn,true);
+ assert.equal(await ev('document.querySelector("#app-screen .btn[data-route=wifi]").disabled'),false);
+ await click('#reset-demo');
  await click('#app-screen [data-route="onboardingLight"]');
  await click('#app-screen [data-route="onboardingClimate"]');
  await click('#app-screen [data-route="login"]');
