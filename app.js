@@ -117,6 +117,7 @@ function btn(label, route, secondary = false, extra = '') {
 }
 function link(label, route, extra = '') { return '<button type="button" class="text-button" ' + (route ? 'data-route="' + route + '"' : '') + ' ' + extra + '>' + e(label) + '</button>'; }
 function field(label, name, value, type = 'text', extra = '') {
+  if (type === 'time') return '<div class="field"><span id="routine-time-label">' + e(label) + '</span><button type="button" class="time-trigger" data-action="select-time" aria-haspopup="dialog" aria-labelledby="routine-time-label routine-time-text"><span id="routine-time-text">' + e(timeLabel(value)) + '</span><span aria-hidden="true">◷</span></button><input type="hidden" name="' + e(name) + '" value="' + e(value) + '"></div>';
   return '<label class="field"><span>' + e(label) + '</span><input name="' + name + '" type="' + type + '" value="' + e(value) + '" ' + extra + '></label>';
 }
 function chips(items, value, action = 'room') {
@@ -198,6 +199,7 @@ function template() {
   }
 }
 function render() {
+  closeTimePicker(false);
   const route = routes[current];
   screen.innerHTML = '<div class="screen-view" data-screen="' + current + '"><div class="statusbar" aria-hidden="true"><span>9:41</span><span>••• ▰</span></div>' + header() + template() + '<div class="home-indicator" aria-hidden="true"></div></div>';
   $('#screen-picker').value = current;
@@ -217,6 +219,7 @@ document.addEventListener('click', event => {
     return;
   }
   const action = el.dataset.action;
+  if (action === 'select-time') return openTimePicker(el);
   if (action === 'back') return back();
   if (action === 'room') { captureForm(); state.room = el.dataset.value; saveState(); render(); return; }
   if (action === 'kelvin') { state.kelvin = Number(el.dataset.value); saveState(); render(); toast('색온도 ' + state.kelvin + 'K로 변경했어요.'); return; }
@@ -313,5 +316,90 @@ function routeFromURL() {
   const path = decodeURIComponent(location.pathname).replace(/^\/+|\/+$/g, '');
   return routes[hash] ? hash : routes[path] ? path : 'welcome';
 }
+
+let timeModal = null;
+let timeOpener = null;
+function timeLabel(value) {
+  const [hours, minutes] = value.split(':').map(Number);
+  return (hours < 12 ? '오전' : '오후') + ' ' + String(hours % 12 || 12).padStart(2, '0') + ':' + String(minutes).padStart(2, '0');
+}
+function closeTimePicker(restoreFocus = true) {
+  if (!timeModal) return;
+  timeModal.remove();
+  timeModal = null;
+  const view = screen.querySelector('.screen-view');
+  if (view) view.inert = false;
+  if (restoreFocus && timeOpener?.isConnected) timeOpener.focus({ preventScroll: true });
+  timeOpener = null;
+}
+function openTimePicker(button) {
+  if (timeModal) return;
+  const input = screen.querySelector('[name="routineTime"]');
+  if (!input) return;
+  const [hours, minutes] = input.value.split(':').map(Number);
+  const selection = { period: hours >= 12 ? 'PM' : 'AM', hour: String(hours % 12 || 12).padStart(2, '0'), minute: String(minutes).padStart(2, '0') };
+  timeOpener = button;
+  const modal = document.createElement('div');
+  modal.className = 'time-overlay';
+  modal.innerHTML = '<section class="time-dialog" role="dialog" aria-modal="true" aria-labelledby="time-dialog-title" aria-describedby="time-dialog-help"><div class="time-dialog-heading"><div><p class="time-eyebrow">SCHEDULE</p><h3 id="time-dialog-title">실행 시간 선택</h3></div><button type="button" class="time-close" data-time-dismiss aria-label="닫기">×</button></div><p id="time-dialog-help">원하는 시간을 선택해 주세요.</p><p class="time-preview" aria-live="polite"></p><div class="time-columns"></div><div class="time-dialog-actions"><button type="button" class="btn secondary" data-time-dismiss>취소</button><button type="button" class="btn" data-time-confirm>확인</button></div></section>';
+  const columns = modal.querySelector('.time-columns');
+  const values = { period: [['AM', '오전'], ['PM', '오후']], hour: Array.from({ length: 12 }, (_, i) => [String(i + 1).padStart(2, '0'), String(i + 1).padStart(2, '0')]), minute: Array.from({ length: 60 }, (_, i) => [String(i).padStart(2, '0'), String(i).padStart(2, '0')]) };
+  for (const [key, label] of [['period', '오전·오후'], ['hour', '시'], ['minute', '분']]) {
+    const group = document.createElement('div');
+    group.className = 'time-column';
+    group.innerHTML = '<span class="time-column-label">' + label + '</span><div class="time-options" role="listbox" aria-label="' + label + '">' + values[key].map(([value, text]) => '<button type="button" role="option" data-time-part="' + key + '" data-time-value="' + value + '">' + text + '</button>').join('') + '</div>';
+    columns.appendChild(group);
+  }
+  const selectedTime = () => String((Number(selection.hour) % 12) + (selection.period === 'PM' ? 12 : 0)).padStart(2, '0') + ':' + selection.minute;
+  function update() {
+    modal.querySelector('.time-preview').textContent = timeLabel(selectedTime());
+    modal.querySelectorAll('[data-time-part]').forEach(option => {
+      const selected = selection[option.dataset.timePart] === option.dataset.timeValue;
+      option.setAttribute('aria-selected', String(selected));
+      option.tabIndex = selected ? 0 : -1;
+    });
+  }
+  function choose(option) {
+    selection[option.dataset.timePart] = option.dataset.timeValue;
+    update();
+    option.scrollIntoView({ block: 'nearest' });
+  }
+  modal.addEventListener('click', event => {
+    if (event.target === modal || event.target.closest('[data-time-dismiss]')) return closeTimePicker();
+    const option = event.target.closest('[data-time-part]');
+    if (option) return choose(option);
+    if (event.target.closest('[data-time-confirm]')) {
+      input.value = selectedTime();
+      screen.querySelector('#routine-time-text').textContent = timeLabel(input.value);
+      captureForm();
+      closeTimePicker();
+    }
+  });
+  modal.addEventListener('keydown', event => {
+    if (event.key === 'Escape') { event.preventDefault(); closeTimePicker(); return; }
+    const option = event.target.closest('[data-time-part]');
+    if (option && ['ArrowUp', 'ArrowDown', 'Home', 'End'].includes(event.key)) {
+      event.preventDefault();
+      const options = [...option.parentElement.querySelectorAll('[role="option"]')];
+      const index = options.indexOf(option);
+      const next = event.key === 'Home' ? 0 : event.key === 'End' ? options.length - 1 : Math.max(0, Math.min(options.length - 1, index + (event.key === 'ArrowDown' ? 1 : -1)));
+      choose(options[next]);
+      options[next].focus();
+    }
+    if (event.key === 'Tab') {
+      const stops = [...modal.querySelectorAll('button:not([tabindex="-1"])')];
+      const first = stops[0], last = stops.at(-1);
+      if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
+      else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
+    }
+  });
+  screen.querySelector('.screen-view').inert = true;
+  screen.appendChild(modal);
+  timeModal = modal;
+  update();
+  modal.querySelectorAll('[aria-selected="true"]').forEach(option => option.parentElement.scrollTop = Math.max(0, option.offsetTop - option.parentElement.offsetTop - 44));
+  modal.querySelector('[data-time-confirm]').focus({ preventScroll: true });
+}
+
 const initialRoute = routeFromURL();
 go(routes[initialRoute] ? initialRoute : 'welcome', { replace: true });

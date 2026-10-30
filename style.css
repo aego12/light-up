@@ -20,3 +20,25 @@
 /* Keep the fixture visible while dimming only the light layer. */
 .lamp-base{position:absolute;left:-15px;top:0;width:270px;height:245px;pointer-events:none}
 .lamp-slot:not(.off) .lamp-art{opacity:var(--lamp-intensity,1);transition:opacity 80ms linear}
+
+/* In-app time selection dialog */
+.field .time-trigger{width:100%;height:52px;border:1px solid var(--light-color-border);border-radius:12px;background:var(--light-color-surface);padding:0 15px;color:var(--light-color-text);display:flex;align-items:center;justify-content:space-between;font-size:14px;text-align:left}
+.time-trigger>span:last-child{font-size:20px;color:var(--light-color-muted)}
+.time-overlay{position:absolute;inset:0;z-index:40;background:rgba(22,14,9,.64);backdrop-filter:blur(5px);display:flex;align-items:center;justify-content:center;padding:23px;border-radius:30px}
+.time-dialog{width:100%;background:linear-gradient(145deg,#684f3d,#3c2c21);border:1px solid #a5867080;box-shadow:0 20px 50px #0005;border-radius:24px;padding:22px 18px}
+.time-dialog-heading{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.time-eyebrow{font:9px Manrope,sans-serif;letter-spacing:1.6px;color:var(--light-color-accent);margin:0 0 7px}
+.time-dialog h3{font-size:19px;font-weight:500;margin:0;line-height:1.5;letter-spacing:-.4px}
+.time-close{width:36px;height:36px;background:var(--light-color-glass);border-radius:50%;font:25px Manrope,sans-serif;flex-shrink:0}
+#time-dialog-help{font-size:11px;color:var(--light-color-muted);margin:13px 0 0}
+.time-preview{text-align:center;font:300 30px Manrope,"Noto Sans KR",sans-serif;color:var(--light-color-primary);margin:20px 0 18px;letter-spacing:-.7px}
+.time-columns{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+.time-column{min-width:0}
+.time-column-label{display:block;text-align:center;font-size:10px;color:var(--light-color-muted);margin-bottom:9px}
+.time-options{position:relative;height:176px;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:none;background:#22170f38;border:1px solid #a5867033;border-radius:12px;padding:4px;scroll-padding:4px}
+.time-options::-webkit-scrollbar{display:none}
+.time-options button{height:40px;width:100%;display:block;margin:0 0 2px;background:transparent;border-radius:8px;font-size:14px;font-family:Manrope,"Noto Sans KR",sans-serif;color:var(--light-color-muted)}
+.time-options button:hover{background:var(--light-color-glass);color:var(--light-color-text)}
+.time-options button[aria-selected=true]{background:var(--light-color-primary);color:var(--light-color-ink);font-weight:500;box-shadow:0 2px 8px #0001}
+.time-dialog-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:22px}
+.time-dialog-actions .btn{min-height:48px}
