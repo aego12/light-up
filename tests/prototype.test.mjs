@@ -62,6 +62,10 @@ try {
  await send('Runtime.enable'); await send('Page.enable');
  await send('Emulation.setDeviceMetricsOverride', { width: 1440, height: 1000, deviceScaleFactor: 1, mobile: false });
  await send('Page.navigate', { url: base }); await ready();
+ await send('Page.navigate', { url: base + 'home' }); await ready();
+ assert.equal(await getScreen(), 'home', 'Direct URL restored');
+ await send('Page.reload'); await ready();
+ assert.equal(await getScreen(), 'home', 'Refresh restored home');
  await click('#reset-demo');
  await screenshot('light-up-desktop.png');
  const keys = await ev('[...document.querySelector("#screen-picker").options].map(n=>n.value)');
@@ -70,6 +74,7 @@ try {
  for (const key of keys) {
   await route(key);
   assert.equal(await getScreen(), key);
+  await ev('Promise.all([...document.querySelectorAll("#app-screen img")].map(img=>img.decode().catch(()=>{})))');
   const findings = await ev(`(()=>{
    const f=document.querySelector("#app-screen").getBoundingClientRect();
    const nodes=[...document.querySelectorAll("#app-screen button,#app-screen input,#app-screen .page-heading,#app-screen .positioned")];
