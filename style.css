@@ -16,3 +16,7 @@
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
 
 .form-error:empty{display:none}.field input[type=time]{color-scheme:dark}.screen-view .btn{flex-shrink:0}
+
+/* Keep the fixture visible while dimming only the light layer. */
+.lamp-base{position:absolute;left:-15px;top:0;width:270px;height:245px;pointer-events:none}
+.lamp-slot:not(.off) .lamp-art{opacity:var(--lamp-intensity,1);transition:opacity 80ms linear}

@@ -133,7 +133,12 @@ function card(title, subtitle, target = '', switchKey = '', on = true, offline =
 function nav(active) {
   return '<nav class="bottom-nav" aria-label="앱 내비게이션">' + [['home', '홈'], ['rooms', '공간'], ['routines', '예약'], ['settings', '설정']].map(([key, label]) => '<button type="button" data-route="' + key + '"' + (active === key ? ' aria-current="page"' : '') + '>' + label + '</button>').join('') + '</nav>';
 }
-function lamp(y, off = false) { return '<div class="lamp-slot' + (off ? ' off' : '') + '" style="--y:' + y + 'px"><img class="lamp-art" src="' + ASSETS + (off ? '30ead.svg' : 'lamp-' + ([2700,4000,6500].includes(Number(state.kelvin)) ? state.kelvin : 2700) + '.svg') + '" width="' + (off ? 240 : 270) + '" height="' + (off ? 220 : 245) + '" alt="따뜻한 빛을 비추는 블랙 펜던트 조명"></div>'; }
+function lamp(y, off = false) {
+  const kelvin = [2700, 4000, 6500].includes(Number(state.kelvin)) ? state.kelvin : 2700;
+  const intensity = clamp(Number(state.brightness) || 0, 0, 100) / 100;
+  const base = off ? '' : '<img class="lamp-base" src="' + ASSETS + 'lamp-unlit.svg" width="270" height="245" alt="?? ??? ??">';
+  return '<div class="lamp-slot' + (off ? ' off' : '') + '" style="--y:' + y + 'px;--lamp-intensity:' + intensity + '">' + base + '<img class="lamp-art" src="' + ASSETS + (off ? '30ead.svg' : 'lamp-' + kelvin + '.svg') + '" width="' + (off ? 240 : 270) + '" height="' + (off ? 220 : 245) + '" alt="' + (off ? '?? ??? ??' : '') + '"></div>';
+}
 function statusArt(symbol, y = 239, error = false) {
   return '<div class="status-art' + (error ? ' error' : '') + '" style="--y:' + y + 'px"><img src="' + ASSETS + '7b4de.svg" width="148" height="148" alt=""><span class="display">' + e(symbol) + '</span></div>';
 }
@@ -237,6 +242,9 @@ screen.addEventListener('input', event => {
   state.brightness = Number(event.target.value);
   $('#brightness-value').textContent = state.brightness;
   event.target.style.setProperty('--brightness', state.brightness + '%');
+  screen.querySelectorAll('.lamp-slot:not(.off)').forEach(lamp => {
+    lamp.style.setProperty('--lamp-intensity', String(state.brightness / 100));
+  });
   saveState();
 });
 screen.addEventListener('submit', event => {

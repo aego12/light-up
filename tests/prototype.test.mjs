@@ -106,6 +106,19 @@ try {
  await click('#app-screen [type="submit"]'); assert.equal(await getScreen(), 'home');
  await screenshot('light-up-home.png');
  await click('#app-screen [data-route="light"]');
+ for (const brightness of [0,31,100]) {
+  await ev('(()=>{const n=document.querySelector("#brightness");n.value="'+brightness+'";n.dispatchEvent(new Event("input",{bubbles:true}))})()');
+  await delay(150);
+  assert.equal(await ev('Number(document.querySelector("#brightness-value").textContent)'),brightness);
+  assert.equal(await ev('Number(getComputedStyle(document.querySelector(".lamp-art")).opacity)'),brightness/100);
+  assert.equal(await ev('getComputedStyle(document.querySelector(".lamp-base")).opacity'),'1');
+  assert.equal((await savedState()).brightness,brightness);
+  await ev('Promise.all([...document.querySelectorAll(".lamp-slot img")].map(img=>img.decode()))');
+  const clip=await ev('(()=>{const r=document.querySelector("#app-screen").getBoundingClientRect();return {x:r.x,y:r.y,width:r.width,height:r.height,scale:1}})()');
+  const shot=await send('Page.captureScreenshot',{format:'png',clip});
+  await writeFile('artifacts/light-up-brightness-'+brightness+'.png',Buffer.from(shot.data,'base64'));
+ }
+
  await ev('(()=>{const n=document.querySelector("#brightness");n.value="37";n.dispatchEvent(new Event("input",{bubbles:true}))})()');
  assert.equal((await savedState()).brightness, 37);
  await click('#app-screen [data-action="kelvin"][data-value="4000"]');
